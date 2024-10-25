@@ -1,0 +1,3 @@
+async def main():
+    asyncio.create_task(check_inactivity())
+    await start_message_listener(handle_message)  # Функція для прослуховування повідомлень
