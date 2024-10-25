@@ -4,6 +4,7 @@ import random
 from datetime import datetime
 import openai
 from telegram import Bot
+from telegram.error import BadRequest
 
 # Завантажуємо ключі з змінних середовища
 openai.api_key = os.getenv("OPENAI_API_KEY")
@@ -12,7 +13,10 @@ bot = Bot(token=telegram_bot_token)
 
 # Функція для надсилання повідомлення через Telegram
 async def bot_send_message(chat_id, message):
-    await bot.send_message(chat_id=chat_id, text=message)
+    try:
+        await bot.send_message(chat_id=chat_id, text=message)
+    except BadRequest as e:
+        print(f"Failed to send message to chat_id {chat_id}: {e}")
 
 # Функція для перевірки, чи повідомлення містить тригерні слова
 def should_respond(message):
@@ -76,5 +80,9 @@ async def start_message_listener(chat_id, callback):
         await asyncio.sleep(2)
 
 # Запускаємо основну функцію
-chat_id = "YOUR_CHAT_ID"  # Вкажи тут свій ідентифікатор чату для тестування
-asyncio.run(main(chat_id))
+if __name__ == '__main__':
+    try:
+        chat_id = 987654321  # Заміни на свій дійсний chat_id
+        asyncio.run(main(chat_id))
+    except Exception as e:
+        print(f"An error occurred: {e}")
